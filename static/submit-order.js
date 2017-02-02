@@ -6,7 +6,7 @@ request.setRequestHeader('User', userId);
 request.onload = function () { alert('Order submitted') };
 var basket = document.cookie.split(/; /).find(function(item) { return item.match(/^basket=/); });
 if (basket) {
-    request.send(atob(basket.replace(/^basket=/, '').replace(/\.+$/, '=')));
+    request.send(atob(basket.replace(/^basket=/, '').replace(/\.+$/, '')));
 } else {
     alert('Please add something to your basket')
 }
