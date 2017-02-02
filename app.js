@@ -13,8 +13,6 @@ app.use(express.static('static'));
 
 var Order = mongoose.model('Order', { userId: String, date: Date, order: mongoose.Schema.Types.Mixed });
 
-var orders = {};
-
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
@@ -79,4 +77,4 @@ app.post('/order', function (req, res) {
   );
 });
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
