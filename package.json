@@ -1,0 +1,18 @@
+{
+  "name": "deliveroobot",
+  "version": "0.0.0",
+  "description": "Server and bookmarklets to handle distributed orders from Deliveroo",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/peterjwest/deliveroobot.git"
+  },
+  "main": "app.js",
+  "author": "pete.west@diffblue.com",
+  "dependencies": {
+    "atob": "^2.0.3",
+    "body-parser": "^1.16.0",
+    "cors": "^2.8.1",
+    "express": "^4.14.1",
+    "mongoose": "^4.8.1"
+  }
+}
