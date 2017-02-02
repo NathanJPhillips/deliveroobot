@@ -4,4 +4,9 @@ request.setRequestHeader('Content-type', 'application/json');
 var userId = document.cookie.split(/; /).find(function(item) { return item.match(/^roo_guid=/); }).replace(/^roo_guid=/, '')
 request.setRequestHeader('User', userId);
 request.onload = function () { alert('Order submitted') };
-request.send(atob(document.cookie.split(/; /).find(function(item) { return item.match(/^basket=/); }).replace(/^basket=/, '')));
+var basket = document.cookie.split(/; /).find(function(item) { return item.match(/^basket=/); });
+if (basket) {
+    request.send(atob(basket.replace(/^basket=/, '')));
+} else {
+    alert('Please add something to your basket')
+}
