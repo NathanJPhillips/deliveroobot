@@ -37,7 +37,7 @@ app.get('/order/:restaurant_path', function (req, res) {
 
     var order = orders.reduce(function(combinedOrder, order) {
       order.items.forEach(function(item) {
-        var existing = combinedOrder.items.find(function(existing) { return existing.i === item.i; });
+        var existing = !item.m && combinedOrder.items.find(function(existing) { return existing.i === item.i && !existing.m; });
         if (existing) {
           existing.q += item.q;
         } else {
