@@ -4,7 +4,7 @@ var cors = require('cors');
 var atob = require('atob')
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/deliveroobot');
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/deliveroobot');
 
 var app = express();
 app.use(cors({origin: 'https://deliveroo.co.uk'}));
