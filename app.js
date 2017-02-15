@@ -3,6 +3,8 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var atob = require('atob')
 var mongoose = require('mongoose');
+var _ = require('lodash');
+var request = require('request');
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/deliveroobot');
 
@@ -11,7 +13,13 @@ app.use(cors({origin: 'https://deliveroo.co.uk'}));
 app.use(bodyParser.json());
 app.use(express.static('static'));
 
-var Order = mongoose.model('Order', { userId: String, date: Date, order: mongoose.Schema.Types.Mixed });
+var Order = mongoose.model('Order', { 
+  userId: String,
+  date: Date,
+  userName: String,
+  description: String,
+  order: mongoose.Schema.Types.Mixed 
+});
 
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
@@ -55,24 +63,29 @@ app.get('/order/:restaurant_path', function (req, res) {
 });
 
 app.post('/order', function (req, res) {
-  var userId = req.get('User');
-  var order = req.body;
-  if (!userId) {
-      res.status(500)
-      return res.send('User header not provided');
-  }
   var date = new Date();
   date.setHours(0,0,0,0);  
   Order.findOneAndUpdate(
-    {userId: userId, date: date}, 
-    {userId: userId, date: date, order: order}, 
-    {upsert: true}, 
-    function (err, doc) {
+    {userId: req.body.userId, date: date}, 
+    _.set(_.pick(req.body, ['userId', 'userName', 'description', 'order']), 'date', date),
+    {upsert: true, passRawResult: true}, 
+    function (err, order, raw) {
       if (err) {
         res.status(500)
         return res.send('Database error: couldn\'t save order');
       }
       res.send('Ok');
+
+      var orderAction = raw.lastErrorObject.updatedExisting ? 'updated' : 'submitted';
+      request.post({
+        url: "https://hooks.slack.com/services/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",
+        headers: {"Content-Type": "application/json"},
+        body: {
+          username: 'Deliveroobot',
+          icon_url: 'https://deliveroobot.herokuapp.com/slack-icon.png',
+          text: 'Order ' + orderAction + ' for ' + req.body.userName + ':\n' + req.body.description},
+        json: true
+      });
     }
   );
 });
