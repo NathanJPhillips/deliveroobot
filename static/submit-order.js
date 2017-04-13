@@ -13,13 +13,19 @@ var description = [].map.call(document.getElementsByClassName('oi-details'), fun
     return item.innerText.replace(/(\r\n|\r|\n)+$/, '').replace(/(\r\n|\r|\n)+/g, ', ')
 }).join('\n');
 
+if (!description) {
+    description = [].map.call(document.querySelectorAll('.menu-nav .basket-contents__item-list .basket-item'), function(item) {
+        return item.innerText.replace(/(\r\n|\r|\n)+$/, '').replace(/(\r\n|\r|\n)+/g, ', ').replace(/^(\d+),/, '$1x').replace(/, £\d+.\d+$/, '').replace(/ +,/g, ',');
+    }).join('\n');
+}
+
 request.onload = function() { alert('Order submitted') };
 var order = document.cookie.split(/; /).filter(function(item) { return item.match(/^basket=/); })[0];
 if (order) {
     request.send(JSON.stringify({
         userId: userId,
         userName: userName,
-        description: description,
+        description: description || 'Order summary unavailable',
         order: JSON.parse(atob(order.replace(/^basket=/, '').replace(/\.+$/, ''))),
     }));
 } else {
