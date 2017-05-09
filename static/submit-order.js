@@ -20,9 +20,8 @@ if (!description) {
     }).join('\n');
 }
 
-var reactComponent = document.querySelector('[data-component-name=MenuIndexApp]');
-if (reactComponent) {
-    var deliverooData = JSON.parse(reactComponent.dataset.props);
+var getOrder = function(data, callback) {
+    var deliverooData = JSON.parse(reactComponent.dataset.props);   
 
     var categories = {};
     deliverooData.menu.categories.map(function(category) {
@@ -36,7 +35,6 @@ if (reactComponent) {
     var addItem = new XMLHttpRequest();
     addItem.open('POST', 'https://deliveroo.co.uk/api/basket/items', true);
     addItem.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
-    addItem.setRequestHeader('authorization', 'Basic NjIxNDI5Njp3ZWIsMmJkMTM3ZWM2MTM2NDk3ZmE4ODQxYjkxMGVlYTQyYjE=');
     addItem.send(JSON.stringify({
         basket_item_info: {item: {item_id: testItem.id}},
         delivery_day: deliverooData.basket.scheduled_delivery_day || 'today',
@@ -61,21 +59,28 @@ if (reactComponent) {
             restaurant_id: deliverooData.restaurant.id,
         }));
         removeItem.onload = function(data) {
-            var basketData = JSON.parse(removeItem.responseText).basket;
-            console.log(basketData.items);
-            if (basketData.items.length) {
-                request.send(JSON.stringify({
-                    userId: userId,
-                    userName: userName,
-                    description: description || 'Order summary unavailable',
-                    order: basketData,
-                    newApi: true,
-                }));
-            } else {
-                alert('Please add something to your basket')
-            }
+            callback(JSON.parse(removeItem.responseText).basket);
         };
     };
+};
+
+var reactComponent = document.querySelector('[data-component-name=MenuIndexApp]');
+if (reactComponent) {
+    var deliverooData = JSON.parse(reactComponent.dataset.props);
+
+    getOrder(deliverooData, function(basketData) {
+        if (basketData.items.length) {
+            request.send(JSON.stringify({
+                userId: userId,
+                userName: userName,
+                description: description || 'Order summary unavailable',
+                order: basketData,
+                newApi: true,
+            }));
+        } else {
+            alert('Please add something to your basket')
+        }
+    });
 }
 
 else {
