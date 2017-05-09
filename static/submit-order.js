@@ -78,15 +78,17 @@ if (reactComponent) {
     };
 }
 
-var order = document.cookie.split(/; /).filter(function(item) { return item.match(/^basket=/); })[0];
-if (order) {
-    request.send(JSON.stringify({
-        userId: userId,
-        userName: userName,
-        description: description || 'Order summary unavailable',
-        order: JSON.parse(atob(order.replace(/^basket=/, '').replace(/\.+$/, ''))),
-        newApi: false,
-    }));
-} else {
-    alert('Please add something to your basket')
+else {
+    var order = document.cookie.split(/; /).filter(function(item) { return item.match(/^basket=/); })[0];
+    if (order) {
+        request.send(JSON.stringify({
+            userId: userId,
+            userName: userName,
+            description: description || 'Order summary unavailable',
+            order: JSON.parse(atob(order.replace(/^basket=/, '').replace(/\.+$/, ''))),
+            newApi: false,
+        }));
+    } else {
+        alert('Please add something to your basket')
+    }
 }
