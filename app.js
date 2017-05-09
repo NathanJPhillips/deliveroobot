@@ -18,7 +18,8 @@ var Order = mongoose.model('Order', {
   date: Date,
   userName: String,
   description: String,
-  order: mongoose.Schema.Types.Mixed 
+  order: mongoose.Schema.Types.Mixed,
+  newApi: Boolean,
 });
 
 app.get('/', function (req, res) {
@@ -67,7 +68,7 @@ app.post('/order', function (req, res) {
   date.setHours(0,0,0,0);  
   Order.findOneAndUpdate(
     {userId: req.body.userId, date: date}, 
-    _.set(_.pick(req.body, ['userId', 'userName', 'description', 'order']), 'date', date),
+    _.set(_.pick(req.body, ['userId', 'userName', 'description', 'order', 'newApi']), 'date', date),
     {upsert: true, passRawResult: true}, 
     function (err, order, raw) {
       if (err) {
