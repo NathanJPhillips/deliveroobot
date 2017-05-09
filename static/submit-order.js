@@ -68,7 +68,7 @@ if (reactComponent) {
                     userId: userId,
                     userName: userName,
                     description: description || 'Order summary unavailable',
-                    order: basketData.items.length,
+                    order: basketData,
                     newApi: true,
                 }));
             } else {
