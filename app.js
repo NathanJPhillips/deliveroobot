@@ -26,8 +26,7 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
-app.get('/order/:restaurant_path', function (req, res) {
-  var restaurantPath = atob(req.params.restaurant_path);
+app.get('/order/:restaurant_id', function (req, res) {
   var date = new Date();
   date.setHours(0, 0, 0, 0); 
   
@@ -37,7 +36,7 @@ app.get('/order/:restaurant_path', function (req, res) {
       return res.send('Database error: couldn\'t load orders');
     }
     orders = orders.map(function(order) { return order.order; })
-      .filter(function(order) { return order.url === restaurantPath; });
+      .filter(function(order) { return order.restaurant_id === req.params.restaurant_id; });
 
     if (orders.length === 0) {
       res.status(500)

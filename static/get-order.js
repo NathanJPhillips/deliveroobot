@@ -64,21 +64,21 @@ var clearOrder = function (items, callback) {
     };
 };
 
-var request = new XMLHttpRequest();
-request.open('GET', 'https://deliveroobot.herokuapp.com/order/' + btoa(window.location.pathname), true);
-request.onload = function (data) {
-    var reactComponent = document.querySelector('[data-component-name=MenuIndexApp]');  
-    if (reactComponent) {
-        var deliverooData = JSON.parse(reactComponent.dataset.props);
+var reactComponent = document.querySelector('[data-component-name=MenuIndexApp]');  
+if (reactComponent) {
+    var deliverooData = JSON.parse(reactComponent.dataset.props);
 
+    var request = new XMLHttpRequest();
+    request.open('GET', 'https://deliveroobot.herokuapp.com/order/' + deliverooData.restaurant.id, true);
+    request.onload = function (data) {
+        
         getOrder(deliverooData, function(basketData) {
             clearOrder(basketData.items, function() {
                 console.log('Done!');
             });
         });
-    } else {
-        document.cookie = 'basket='+btoa(request.responseText)+'; path=/';
-        window.location.reload();
-    }
-};
+    };
+} else {
+   alert('Oh no, something went wrong!');
+}
 request.send();
