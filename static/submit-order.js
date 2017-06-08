@@ -20,9 +20,7 @@ if (!description) {
     }).join('\n');
 }
 
-var getOrder = function(data, callback) {
-    var deliverooData = JSON.parse(reactComponent.dataset.props);   
-
+var getOrder = function (deliverooData, callback) {
     var categories = {};
     deliverooData.menu.categories.map(function(category) {
         categories[category.id] = category;
@@ -66,7 +64,7 @@ var getOrder = function(data, callback) {
 
 var reactComponent = document.querySelector('[data-component-name=MenuIndexApp]');
 if (reactComponent) {
-    var deliverooData = JSON.parse(reactComponent.dataset.props);
+    var deliverooData = JSON.parse(reactComponent.innerHTML);
 
     getOrder(deliverooData, function(basketData) {
         if (basketData.items.length) {

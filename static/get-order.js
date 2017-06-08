@@ -1,6 +1,4 @@
-var getOrder = function(data, callback) {
-    var deliverooData = JSON.parse(reactComponent.dataset.props);   
-
+var getOrder = function (deliverooData, callback) {
     var categories = {};
     deliverooData.menu.categories.map(function(category) {
         categories[category.id] = category;
@@ -64,14 +62,14 @@ var clearOrder = function (items, callback) {
     };
 };
 
-var reactComponent = document.querySelector('[data-component-name=MenuIndexApp]');  
+var reactComponent = document.querySelector('[data-component-name=MenuIndexApp]');
 if (reactComponent) {
-    var deliverooData = JSON.parse(reactComponent.dataset.props);
+    var deliverooData = JSON.parse(reactComponent.innerHTML);
 
     var request = new XMLHttpRequest();
     request.open('GET', 'https://deliveroobot.herokuapp.com/order/' + deliverooData.restaurant.id, true);
     request.onload = function (data) {
-        
+
         getOrder(deliverooData, function(basketData) {
             clearOrder(basketData.items, function() {
                 console.log('Done!');
